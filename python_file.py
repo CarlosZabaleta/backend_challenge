@@ -3,30 +3,35 @@ from urllib import urlencode
 import urlparse
 import json
 
+# Add the page param to the URL
 
-def get_url():
+
+def get_url(num_page):
     url = "https://backend-challenge-summer-2018.herokuapp.com/challenges.json?id=1"
-    params = {'page': 1}
+    params = {'page': num_page}
     url_parts = list(urlparse.urlparse(url))
     query = dict(urlparse.parse_qsl(url_parts[4]))
     query.update(params)
     url_parts[4] = urlencode(query)
-    print(urlparse.urlunparse(url_parts))
+    return urlparse.urlunparse(url_parts)
+
+# Request data from an especific URL
 
 
-get_url()
+def request_data():
+    num_page = 1
+    while True:
+        url = get_url(num_page)
+        json_obj = urllib2.urlopen(url)
+        data = json.load(json_obj)
+        for each in (data['menus']):
+            if "parent_id" in each:
+                print 'id-' + str(each["id"]), 'parent-' + str(each["parent_id"]), 'child' + str(each["child_ids"])
+            else:
+                print "id-" + str(each['id']), "child-" + str(each['child_ids'])
+            if data['pagination']['total'] == each["id"]:
+                break
+        num_page += 1
 
-# def show_pages(number):
-#     json_obj = urllib2.urlopen(url)
-#     data = json.load(json_obj)
-#     for each in (data['menus']):
-#         if "parent_id" in each:
-#             print 'id-' + str(each["id"]), 'parent-' + str(each["parent_id"]), 'child' + str(each["child_ids"])
-#         else:
-#             print "id-" + str(each['id']), "child-" + str(each['child_ids'])
 
-
-# x = 1
-# while x < 5:
-#     show_pages(str(x))
-#     x = x + 1
+request_data()

@@ -7,7 +7,7 @@ import json
 
 
 def get_url(num_page):
-    url = "https://backend-challenge-summer-2018.herokuapp.com/challenges.json?id=1"
+    url = "https://backend-challenge-summer-2018.herokuapp.com/challenges.json?id=2"
     params = {'page': num_page}
     url_parts = list(urlparse.urlparse(url))
     query = dict(urlparse.parse_qsl(url_parts[4]))
@@ -18,6 +18,9 @@ def get_url(num_page):
 # Request data from an especific URL
 
 
+dic_fin = {}
+
+
 def request_data():
     num_page = 1
     while True:
@@ -26,12 +29,14 @@ def request_data():
         data = json.load(json_obj)
         for each in (data['menus']):
             if "parent_id" in each:
-                print 'id-' + str(each["id"]), 'parent-' + str(each["parent_id"]), 'child' + str(each["child_ids"])
+                print 'id-' + str(each["id"]), 'child' + str(each["child_ids"])
             else:
                 print "id-" + str(each['id']), "child-" + str(each['child_ids'])
             if data['pagination']['total'] == each["id"]:
-                break
+                print (data['pagination']['total'])
+                return num_page
+
         num_page += 1
 
 
-request_data()
+print request_data()

@@ -1,34 +1,35 @@
-import urllib2
+import urllib
 from urllib import urlencode
 import urlparse
 import json
 
 
 # Author: Carlos Zabaleta
-# Purpose: Resolve the Backend Intern Challenge and Extra Challenge - Summer 2018
+# Purpose: Solved the Backend Intern Challenge and Extra Challenge - Summer 2018
 # Language: Python 2.7
+# Repository: https://github.com/CarlosZabaleta/backend_challenge
 
 
-# Add changeble params to the URL
+# Add changeable params to the URL
 
 def get_url(num_page, id_number):
     url = "https://backend-challenge-summer-2018.herokuapp.com/challenges.json"
     params = {"id": id_number, "page": num_page}
-    url_parts = list(urlparse.urlparse(url))
+    url_parts = list(urlparse.urlparse(url))  # parse the url in a list
     query = dict(urlparse.parse_qsl(url_parts[4]))
-    query.update(params)
+    query.update(params)  # add the params to the URL
     url_parts[4] = urlencode(query)
-    return urlparse.urlunparse(url_parts)
+    return urlparse.urlunparse(url_parts)  # return the URL with and specific id and page
 
 
 # Request data from an specific URL
 
 def request_data():
-    global num_page, id_num
+    global num_page, id_numbe
     while True:
         url = get_url(num_page, id_num)
-        json_obj = urllib2.urlopen(url)
-        data = json.load(json_obj)
+        json_obj = urllib.urlopen(url)  # open a network object denoted by the url
+        data = json.load(json_obj)  # convert data in json format
         for each in (data["menus"]):  # Take data from URL
             if "parent_id" in each:  # if the object has parent_id
                 data_dict[str(each["id"])] = [each["parent_id"], each["child_ids"]]
@@ -56,6 +57,8 @@ def find_children(id_root):
     return data_branch
 
 
+# Verify if there is duplicates in the list
+
 def no_duplicates(list_du):
     return len(list_du) == len(set(list_du))
 
@@ -69,13 +72,15 @@ def find_id_root(data):
         id = key  # save value
         if int(id) in id_control:  # to avoid repetition if an id as already in id_control
             continue  # continue with the next key
-        id_parent = value[0] # save value
+        id_parent = value[0]  # save value
         while str(id_parent) != "0":  # Look for id_parent = 0 to get the id_root
             id = data[str(id)][0]
             id_parent = data[str(id)][0]  # id_parent breaks out of the loop
         data_branch = find_children(str(id))  # data_branch is a list with an id_root and all the id_root's children
         output(data_branch)  # send a data_array to generate the required output
         del data_branch[:]  # Delete the data_branch to use for the next branch
+
+# Print the wanted output
 
 
 def output(data_branch):
@@ -88,15 +93,14 @@ def output(data_branch):
         output_dict["Invalid_menus"] = invalid_menu_array  # # add invalid_menus arrays to the output dictionary
 
 
-num_page = 1
-id_num = 1  # posible inputs 1 or 2
-id_control = []
-data_dict = {}
-data_branch = []
-valid_menu_array = []
-invalid_menu_array = []
-output_dict = {}
-
+num_page = 1 # number of page, in the request_data function find the others valid pages
+id_num = 1  # possible inputs 1 or 2
+id_control = []  # list of all the ids in the imput
+data_dict = {}  # dictionary with key = "id" and values value = "children"
+data_branch = []  # branch id list starting with the id_root to the children
+valid_menu_array = []  # list of the valid menu for the output
+invalid_menu_array = []  # list of the invalid menu for the output
+output_dict = {}  # final output dictionary
 
 data_dict = request_data()
 # Stored elements from data are like {12,[9,[13,14]]}

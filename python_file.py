@@ -2,12 +2,11 @@ import urllib2
 from urllib import urlencode
 import urlparse
 import json
-import timeit
 
 
 # Author: Carlos Zabaleta
 # Purpose: Resolve the Backend Intern Challenge and Extra Challenge - Summer 2018
-# Language: Python
+# Language: Python 2.7
 
 
 # Add changeble params to the URL
@@ -25,9 +24,9 @@ def get_url(num_page, id_number):
 # Request data from an specific URL
 
 def request_data():
-    global num_page, num_id
+    global num_page, id_num
     while True:
-        url = get_url(num_page, num_id)
+        url = get_url(num_page, id_num)
         json_obj = urllib2.urlopen(url)
         data = json.load(json_obj)
         for each in (data["menus"]):  # Take data from URL
@@ -83,26 +82,25 @@ def output(data_branch):
     values_dict = {"root_id": data_branch[0], "children": data_branch[1:]}
     if no_duplicates(data_branch):  # Look for duplicates in the values_dict
         valid_menu_array.append(values_dict)
-        output_dict["Valid_menus"] = valid_menu_array
+        output_dict["Valid_menus"] = valid_menu_array  # add valid_menus arrays to the output dictionary
     else:
         invalid_menu_array.append(values_dict)
-        output_dict["Invalid_menus"] = invalid_menu_array
+        output_dict["Invalid_menus"] = invalid_menu_array  # # add invalid_menus arrays to the output dictionary
 
 
 num_page = 1
-num_id = 1  # posible inputs 1 or 2
+id_num = 1  # posible inputs 1 or 2
 id_control = []
 data_dict = {}
 data_branch = []
 valid_menu_array = []
-output_dict = {}
 invalid_menu_array = []
-data_dict = request_data()
+output_dict = {}
 
+
+data_dict = request_data()
 # Stored elements from data are like {12,[9,[13,14]]}
 # {id_root,[id_parent,[children]]}
 
 find_id_root(data_dict)
 print (output_dict)
-
-print timeit.timeit('"-".join(str(n) for n in range(100))', number=10000)

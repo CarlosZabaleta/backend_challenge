@@ -93,8 +93,8 @@ def output(data_branch):
         output_dict['Invalid_menus'] = invalid_menu_array  # # add invalid_menus arrays to the output dictionary
 
 
-num_page = 1 # number of page, in the request_data function find the others valid pages
-id_num = 2  # possible inputs 1 or 2
+num_page = 1  # number of page, in the request_data function find the others valid pages
+id_num = 1  # possible inputs 1 or 2
 id_control = []  # list of all the ids in the imput
 data_dict = {}  # dictionary with key = 'id' and values value = 'children'
 data_branch = []  # branch id list starting with the id_root to the children
